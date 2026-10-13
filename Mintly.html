@@ -1,0 +1,998 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mintly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Hanken+Grotesk:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a capital-markets night ledger. Left-anchored editorial headlines, hairline-ruled grids, a sticky investor device and a two-market bridge between New York and Dubai. */
+:root{
+  --ink:#08101C;
+  --ink-2:#0B1524;
+  --panel:#0F1B2E;
+  --panel-2:#13223A;
+  --line:rgba(200,216,238,.10);
+  --line-2:rgba(200,216,238,.20);
+  --ivory:#ECE6D8;
+  --muted:#93A0B4;
+  --dim:#5F6C81;
+  --mint:#7FD8B0;
+  --mint-deep:#3E9F7A;
+  --mint-wash:rgba(127,216,176,.10);
+  --amber:#D9B26A;
+  --f-display:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --f-body:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --wrap:1200px;
+  --gutter:clamp(16px,4vw,40px);
+  --ease:cubic-bezier(.2,.7,.2,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--ink)}
+body{background:var(--ink);color:var(--ivory);font-family:var(--f-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--mint);color:var(--ink)}
+a{color:inherit}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;letter-spacing:-.015em;line-height:1.05;margin:0;text-wrap:balance}
+p{margin:0}
+em.m{font-style:italic;color:var(--mint)}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-inline:var(--gutter)}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mint);display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--mint);opacity:.7}
+.lede{font-size:clamp(18px,1.6vw,21px);color:var(--muted);max-width:60ch;line-height:1.6}
+section{position:relative}
+.band{padding-block:clamp(88px,12vw,160px)}
+.band.alt{background:var(--ink-2);border-block:1px solid var(--line)}
+:focus-visible{outline:2px solid var(--mint);outline-offset:3px;border-radius:4px}
+.h2{font-size:clamp(40px,5vw,68px)}
+.h2.xl{font-size:clamp(44px,6vw,88px);font-weight:300}
+
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--f-body);font-weight:500;font-size:15px;letter-spacing:.01em;padding:14px 22px;border-radius:999px;border:1px solid transparent;cursor:pointer;text-decoration:none;transition:transform .3s var(--ease),background .3s,border-color .3s,color .3s}
+.btn-primary{background:var(--mint);color:var(--ink)}
+.btn-primary:hover{background:#9AE5C3;transform:translateY(-2px)}
+.btn .arr{transition:transform .3s var(--ease)}
+.btn:hover .arr{transform:translateX(4px)}
+.btn-ghost{border-color:var(--line-2);color:var(--ivory);background:transparent}
+.btn-ghost:hover{border-color:var(--mint);color:var(--mint)}
+
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.rv.in{animation:rise 1s var(--ease) both;animation-delay:var(--d,0s)}
+
+/* NAV */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(8,16,28,.74);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:72px;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand svg{width:30px;height:30px}
+.brand span{font-family:var(--f-display);font-size:26px;letter-spacing:-.02em;line-height:1}
+.nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0}
+.nav ul a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav ul a:hover{color:var(--ivory)}
+.nav .btn{padding:10px 18px;font-size:14px}
+.progress{position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--mint);transform-origin:0 50%;transform:scaleX(0)}
+@media (max-width:1000px){.nav ul{display:none}}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+#flow{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 70% at 18% 40%,rgba(8,16,28,.9),rgba(8,16,28,.25) 70%,transparent);pointer-events:none}
+.hero .wrap{position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;padding-block:clamp(72px,10vw,124px) clamp(64px,8vw,100px)}
+.hero h1{font-size:clamp(46px,7vw,100px);font-weight:300;letter-spacing:-.03em;line-height:.98}
+.hero h1 .ln{display:block}
+.hero h1 .ln:nth-child(2){font-style:italic;color:var(--mint)}
+@keyframes lineIn{from{opacity:0;transform:translateY(40px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+.hero .ln,.hero .h-in{animation:lineIn 1.2s var(--ease) both}
+.hero .ln:nth-child(2){animation-delay:.15s}
+.hero .h-in{animation-delay:var(--d,.35s)}
+.hero .lede{margin-top:30px}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:14px;margin-top:38px}
+.markets-tag{margin-top:34px;display:flex;flex-wrap:wrap;gap:22px;font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.markets-tag span{display:flex;align-items:center;gap:8px}
+.markets-tag i{width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 4px var(--mint-wash);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(127,216,176,.04)}}
+.hero-cards{position:relative;min-height:450px;min-width:0}
+.gcard{position:absolute;background:linear-gradient(160deg,rgba(19,34,58,.94),rgba(12,22,38,.94));border:1px solid var(--line-2);border-radius:20px;padding:22px;box-shadow:0 40px 80px -30px rgba(0,0,0,.7)}
+.gcard .k{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);display:flex;justify-content:space-between;gap:12px}
+.gc1{top:0;right:0;width:min(350px,100%);animation:floaty 9s ease-in-out infinite}
+.gc2{bottom:6px;left:0;width:min(330px,92%);animation:floaty 11s ease-in-out infinite reverse}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.hold h4{margin:12px 0 0;font-family:var(--f-display);font-weight:400;font-size:26px;line-height:1.15}
+.hold .sub{font-size:13px;color:var(--muted);margin-top:4px}
+.hold .grid3{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding-top:16px;border-top:1px solid var(--line)}
+.hold .grid3 small{display:block;font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+.hold .grid3 b{display:block;font-weight:500;font-size:15px;margin-top:4px;font-variant-numeric:tabular-nums}
+.chainline{margin-top:16px;display:flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:11px;color:var(--mint)}
+.chainline::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--mint);animation:blk 1.6s steps(2) infinite}
+@keyframes blk{50%{opacity:.25}}
+.ai-row{display:flex;gap:12px;margin-top:14px}
+.ai-dot{width:30px;height:30px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 35%,#B6F0D6,var(--mint-deep));box-shadow:0 0 0 4px var(--mint-wash)}
+.ai-row p{font-size:15px;line-height:1.5}
+.ai-row p span{color:var(--muted)}
+.src{display:inline-block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;color:var(--mint);border:1px solid rgba(127,216,176,.35);border-radius:6px;padding:2px 6px;margin-top:10px}
+.marquee{position:relative;z-index:2;border-top:1px solid var(--line);overflow:hidden;background:rgba(8,16,28,.6)}
+.marquee .track{display:flex;gap:56px;width:max-content;padding-block:18px;animation:mq 46s linear infinite}
+.marquee span{font-family:var(--f-mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:56px;white-space:nowrap}
+.marquee span::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--mint)}
+@keyframes mq{to{transform:translateX(-50%)}}
+@media (max-width:900px){.hero .wrap{grid-template-columns:1fr}.hero-cards{min-height:440px}}
+
+/* PROBLEM */
+.problem .wrap{display:grid;grid-template-columns:5fr 7fr;gap:clamp(40px,6vw,96px)}
+.problem .body{display:grid;gap:26px;min-width:0}
+.problem .body p{font-size:19px;color:var(--muted);max-width:58ch}
+.noise{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:0;margin:0}
+.noise li{list-style:none;display:flex;align-items:baseline;gap:20px;padding:22px 0;border-bottom:1px solid var(--line);font-family:var(--f-display);font-size:clamp(21px,2.3vw,29px)}
+.noise li:last-child{border-bottom:0}
+.noise .tag{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--dim);min-width:92px;text-transform:uppercase;flex:none}
+.noise li s{text-decoration:none;background:linear-gradient(var(--mint),var(--mint)) 0 58%/0% 1px no-repeat;transition:background-size 1.2s var(--ease)}
+.noise.in li s{background-size:100% 1px}
+.noise.in li:nth-child(2) s{transition-delay:.3s}
+.noise.in li:nth-child(3) s{transition-delay:.6s}
+.noise.in li:nth-child(4) s{transition-delay:.9s}
+.gap-line{font-family:var(--f-display);font-size:clamp(26px,3vw,38px);line-height:1.25;padding-top:10px}
+.gap-line em{color:var(--mint)}
+@media (max-width:900px){.problem .wrap{grid-template-columns:1fr}}
+
+/* ASSETS */
+.assets .head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end}
+.agrid{margin-top:64px;display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.as{position:relative;padding:32px;border-radius:24px;background:linear-gradient(170deg,var(--panel),var(--ink-2));border:1px solid var(--line);overflow:hidden;min-width:0;transition:transform .5s var(--ease),border-color .5s}
+.as:hover{transform:translateY(-6px);border-color:rgba(127,216,176,.35)}
+.as .top{display:flex;justify-content:space-between;align-items:start;gap:16px}
+.as .code{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--dim)}
+.as .motif{width:120px;height:70px;flex:none}
+.as .motif *{stroke:var(--mint);fill:none;stroke-width:1.2}
+.as h3{font-size:30px;margin-top:6px}
+.as p{margin-top:12px;color:var(--muted);font-size:16px;max-width:44ch}
+.as .meta{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font-family:var(--f-mono);font-size:11px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+.as .meta b{display:block;font-weight:400;color:var(--ivory);font-family:var(--f-body);font-size:14px;letter-spacing:0;text-transform:none;margin-top:4px}
+.as:hover .spin{animation:spin 10s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.as .spin{transform-origin:60px 35px}
+.as .bars rect{transform-box:fill-box;transform-origin:bottom;transition:transform .8s var(--ease)}
+.as:hover .bars rect{transform:scaleY(1.3)}
+.as .tower rect{transition:transform .8s var(--ease)}
+.as:hover .tower rect:nth-child(2){transform:translateY(-6px)}
+.as:hover .tower rect:nth-child(3){transform:translateY(-3px)}
+.as .ingot{transition:transform .8s var(--ease)}
+.as:hover .ingot{transform:translateY(-5px)}
+.note-row{margin-top:24px;font-family:var(--f-mono);font-size:11px;color:var(--dim);letter-spacing:.08em}
+@media (max-width:820px){.agrid,.assets .head{grid-template-columns:1fr}.as .meta{grid-template-columns:1fr 1fr}}
+
+/* HOW (device) */
+.how .grid{margin-top:72px;display:grid;grid-template-columns:1fr 380px;gap:clamp(40px,7vw,120px)}
+.steps{list-style:none;margin:0;padding:0;min-width:0}
+.step{padding:40px 0;border-top:1px solid var(--line);cursor:pointer;display:grid;grid-template-columns:72px 1fr;gap:12px;min-height:46vh;align-content:center}
+.step:last-child{border-bottom:1px solid var(--line)}
+.step .n{font-family:var(--f-mono);font-size:13px;color:var(--dim);padding-top:10px;transition:color .4s}
+.step h3{font-size:clamp(28px,3vw,40px);color:var(--dim);transition:color .4s}
+.step p{margin-top:14px;font-size:18px;color:var(--dim);max-width:46ch;transition:color .4s}
+.step.on .n{color:var(--mint)}
+.step.on h3{color:var(--ivory)}
+.step.on p{color:var(--muted)}
+.device{position:sticky;top:calc(env(safe-area-inset-top,0px) + 110px);width:340px;height:680px;margin-left:auto;border-radius:52px;padding:12px;background:linear-gradient(150deg,#26344B,#0E1828 40%,#1B2840);box-shadow:0 60px 120px -40px rgba(0,0,0,.85),0 0 0 1px var(--line-2),0 0 120px -20px rgba(127,216,176,.15)}
+.screen-wrap{position:relative;width:100%;height:100%;border-radius:42px;background:#0A1322;overflow:hidden}
+.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:96px;height:28px;border-radius:20px;background:#000;z-index:5}
+.sbar{position:absolute;top:14px;left:26px;right:26px;display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:11px;color:var(--muted);z-index:4}
+.scr{position:absolute;inset:0;padding:60px 22px 24px;display:flex;flex-direction:column;gap:13px;opacity:0;transform:translateY(18px) scale(.98);transition:opacity .55s var(--ease),transform .55s var(--ease);pointer-events:none}
+.scr.on{opacity:1;transform:none}
+.scr .k{font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.scr h5{margin:0;font-family:var(--f-display);font-weight:400;font-size:25px;line-height:1.1}
+.opt{padding:13px 14px;border-radius:14px;border:1px solid var(--line-2);font-size:13px;color:var(--muted)}
+.opt small{display:block;font-size:11px;color:var(--dim);margin-top:2px}
+.opt.sel{border-color:var(--mint);background:var(--mint-wash);color:var(--ivory)}
+.chk{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:9px 0;border-bottom:1px solid var(--line);color:var(--muted)}
+.chk b{font-weight:500;font-size:11px;color:var(--mint)}
+.chk b.p{color:var(--amber)}
+.mrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 13px;border-radius:14px;background:var(--panel);border:1px solid var(--line);font-size:13px}
+.mrow small{display:block;color:var(--dim);font-size:11px;margin-top:2px}
+.mrow .tg{font-size:10px;color:var(--mint);border:1px solid rgba(127,216,176,.35);padding:3px 7px;border-radius:99px;white-space:nowrap}
+.mbtn{margin-top:auto;text-align:center;padding:14px;border-radius:16px;background:var(--mint);color:var(--ink);font-weight:600;font-size:14px}
+.bub{font-size:13px;line-height:1.5;padding:12px 14px;border-radius:16px;max-width:88%}
+.bub.q{align-self:flex-end;background:var(--panel-2);border:1px solid var(--line-2);border-bottom-right-radius:4px}
+.bub.a{background:var(--mint-wash);border:1px solid rgba(127,216,176,.22);border-bottom-left-radius:4px}
+.amt{font-family:var(--f-display);font-size:44px;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.amt small{font-family:var(--f-body);font-size:14px;color:var(--dim);margin-left:6px}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--line)}
+.kv b{font-weight:500;color:var(--ivory);text-align:right}
+.calm-note{font-size:12.5px;line-height:1.5;color:var(--muted);padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--panel)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.split div{padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--panel)}
+.split small{display:block;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+.split b{display:block;font-weight:500;font-size:16px;margin-top:4px;font-variant-numeric:tabular-nums}
+@media (max-width:900px){
+  .how .grid{grid-template-columns:1fr}
+  .device-col{order:-1}
+  .device{position:relative;top:0;margin:0 auto -60px;transform:scale(.9);transform-origin:top center}
+  .step{min-height:0;padding:26px 0;grid-template-columns:48px 1fr}
+  .step p{font-size:16px}
+}
+
+/* MARKETS */
+.mkt .head{display:flex;justify-content:space-between;align-items:end;gap:32px;flex-wrap:wrap}
+.bridge{margin-top:56px;border:1px solid var(--line-2);border-radius:28px;overflow:hidden;background:linear-gradient(180deg,var(--panel),var(--ink-2))}
+.bridge-vis{position:relative;padding:28px 28px 8px}
+.bridge-vis svg{width:100%;height:auto;display:block;overflow:visible}
+.bridge-vis .grid line{stroke:var(--line);stroke-width:1}
+.bridge-vis .arc{fill:none;stroke:var(--mint);stroke-width:1.4;stroke-dasharray:4 6;animation:dash 1.6s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-20}}
+.bridge-vis .city circle.c{fill:var(--ink);stroke:var(--mint);stroke-width:1.4}
+.bridge-vis .city circle.h{fill:var(--mint);opacity:.15}
+.bridge-vis .city text{fill:var(--ivory);font-family:var(--f-display);font-size:22px}
+.bridge-vis .city .t{fill:var(--muted);font-family:var(--f-mono);font-size:12px;letter-spacing:.08em}
+.bridge-vis .pkt{fill:var(--mint)}
+.tabs{display:flex;gap:0;border-top:1px solid var(--line-2)}
+.tabs button{flex:1;font:inherit;font-size:15px;background:transparent;border:0;color:var(--muted);padding:18px;cursor:pointer;border-right:1px solid var(--line-2);transition:background .3s,color .3s}
+.tabs button:last-child{border-right:0}
+.tabs button[aria-selected="true"]{background:var(--mint-wash);color:var(--ivory);box-shadow:inset 0 -2px 0 var(--mint)}
+.mpanel{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line-2)}
+.mpanel[hidden]{display:none!important}
+.mpanel > div{padding:26px 24px;min-width:0}
+.mpanel > div + div{border-left:1px solid var(--line)}
+.mpanel small{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.mpanel ul{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.mpanel li{font-size:15px;line-height:1.45}
+.mpanel li span{display:block;font-size:13px;color:var(--muted)}
+.mpanel.anim > div{animation:rise .7s var(--ease) both}
+.mpanel.anim > div:nth-child(2){animation-delay:.06s}.mpanel.anim > div:nth-child(3){animation-delay:.12s}.mpanel.anim > div:nth-child(4){animation-delay:.18s}
+@media (max-width:900px){.mpanel{grid-template-columns:1fr 1fr}.mpanel>div:nth-child(3){border-left:0}.mpanel>div:nth-child(n+3){border-top:1px solid var(--line)}}
+@media (max-width:520px){.mpanel{grid-template-columns:1fr}.mpanel>div+div{border-left:0;border-top:1px solid var(--line)}.bridge-vis .city text{font-size:30px}.bridge-vis .city .t{font-size:18px}}
+
+/* INTELLIGENCE */
+.intel .wrap{display:grid;grid-template-columns:5fr 6fr;gap:clamp(40px,6vw,96px);align-items:start}
+.intel .lede{margin-top:26px}
+.intel .quote{margin-top:28px;font-family:var(--f-display);font-style:italic;font-size:24px;padding-left:20px;border-left:1px solid var(--mint)}
+.feats{margin:40px 0 0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.feats li{display:flex;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px}
+.feats svg{width:22px;height:22px;stroke:var(--mint);fill:none;stroke-width:1.4;flex:none}
+.chat{border-radius:26px;background:linear-gradient(170deg,var(--panel),#0A1424);border:1px solid var(--line-2);box-shadow:0 50px 100px -40px rgba(0,0,0,.8);overflow:hidden;min-width:0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 100px)}
+.chat-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.chat-h .t{display:flex;align-items:center;gap:12px;font-size:15px}
+.chat-h .ai-dot{width:26px;height:26px}
+.chat-h small{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+.doc{display:flex;align-items:center;gap:12px;padding:12px 22px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.doc svg{width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:1.4;flex:none}
+.doc b{font-weight:500;color:var(--ivory)}
+.chat-b{padding:24px 22px;display:flex;flex-direction:column;gap:16px;min-height:440px}
+.chat-b .bub{font-size:15px;max-width:92%}
+.chat-b .bub.a{background:transparent;border:0;padding:0;max-width:100%;line-height:1.65}
+.caret{display:inline-block;width:7px;height:16px;background:var(--mint);vertical-align:-2px;margin-left:2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.terms{border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:opacity .5s}
+.terms.hide{opacity:0}
+.terms .cap{display:block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;padding:12px 16px;border-bottom:1px solid var(--line)}
+.terms .row{display:grid;grid-template-columns:1fr 1.3fr auto;gap:12px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line);font-size:13.5px}
+.terms .row:last-child{border-bottom:0}
+.terms .row span:first-child{color:var(--muted)}
+.terms .row .s{font-family:var(--f-mono);font-size:10.5px;color:var(--mint);border:1px solid rgba(127,216,176,.35);border-radius:6px;padding:2px 6px;white-space:nowrap}
+.terms.show .row{animation:rise .6s var(--ease) both}
+.terms.show .row:nth-child(3){animation-delay:.08s}.terms.show .row:nth-child(4){animation-delay:.16s}
+.chat-q{display:flex;flex-wrap:wrap;gap:8px;padding:18px 22px;border-top:1px solid var(--line)}
+.chat-q button{font:inherit;font-size:13px;padding:9px 14px;border-radius:99px;border:1px solid var(--line-2);background:transparent;color:var(--muted);cursor:pointer;transition:all .25s}
+.chat-q button:hover{color:var(--ivory);border-color:var(--mint)}
+.chat-q button[aria-pressed="true"]{background:var(--mint-wash);border-color:var(--mint);color:var(--ivory)}
+@media (max-width:900px){.intel .wrap{grid-template-columns:1fr}.chat{position:relative;top:0}.terms .row{grid-template-columns:1fr 1fr}.terms .row .s{grid-column:1/-1;justify-self:start}}
+
+/* MODEL / TRUST */
+.model .head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end}
+.flow4{margin-top:64px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.node4{position:relative;padding:26px 22px;border:1px solid var(--line-2);border-radius:20px;background:var(--panel);margin-right:36px;min-width:0}
+.node4:last-child{margin-right:0}
+.node4.core{border-color:var(--mint);background:linear-gradient(170deg,rgba(127,216,176,.12),var(--panel) 60%)}
+.node4 small{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.node4 h3{font-size:25px;margin-top:10px}
+.node4 ul{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:6px}
+.node4 li{font-size:14px;color:var(--muted)}
+.node4:not(:last-child)::after{content:"";position:absolute;top:50%;right:-37px;width:36px;height:1px;background:repeating-linear-gradient(90deg,var(--mint) 0 4px,transparent 4px 8px);background-size:16px 1px;animation:flowx 1s linear infinite}
+@keyframes flowx{to{background-position:16px 0}}
+.principles{margin-top:72px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line-2)}
+.pr{padding:30px 24px 0 0;min-width:0}
+.pr+.pr{padding-left:24px;border-left:1px solid var(--line)}
+.pr .ic{width:44px;height:44px;border-radius:50%;border:1px solid rgba(127,216,176,.35);display:grid;place-items:center}
+.pr svg{width:20px;height:20px;stroke:var(--mint);fill:none;stroke-width:1.4}
+.pr h4{margin:20px 0 0;font-weight:500;font-size:18px}
+.pr p{margin-top:10px;color:var(--muted);font-size:15px}
+.ledger{margin-top:72px;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line-2);border-radius:24px;overflow:hidden}
+.ledger > div{padding:32px;min-width:0}
+.ledger > div + div{border-left:1px solid var(--line-2)}
+.ledger .k{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.ledger h4{margin:10px 0 18px;font-family:var(--f-display);font-weight:400;font-size:28px}
+.ledger .kv{font-size:14px;padding:11px 0}
+@media (max-width:980px){
+  .model .head{grid-template-columns:1fr}
+  .flow4{grid-template-columns:1fr 1fr;gap:20px}
+  .node4{margin-right:0}
+  .node4::after{display:none}
+  .principles{grid-template-columns:1fr 1fr}
+  .pr:nth-child(3){padding-left:0;border-left:0}
+  .pr:nth-child(n+3){margin-top:28px}
+}
+@media (max-width:560px){.flow4,.principles,.ledger{grid-template-columns:1fr}.pr,.pr+.pr{padding-left:0;border-left:0}.ledger>div+div{border-left:0;border-top:1px solid var(--line-2)}}
+
+/* ISSUERS */
+.iss .wrap{display:grid;grid-template-columns:5fr 7fr;gap:clamp(40px,6vw,96px);align-items:center}
+.iss-list{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--line-2)}
+.iss-list div{padding:24px 20px 24px 0;border-bottom:1px solid var(--line);min-width:0}
+.iss-list div:nth-child(even){padding-left:20px;border-left:1px solid var(--line)}
+.iss-list b{display:block;font-family:var(--f-display);font-weight:400;font-size:22px}
+.iss-list p{margin-top:8px;font-size:15px;color:var(--muted)}
+.iss .lede{margin-top:24px}
+.iss .btn{margin-top:32px}
+@media (max-width:900px){.iss .wrap{grid-template-columns:1fr}}
+@media (max-width:520px){.iss-list{grid-template-columns:1fr}.iss-list div:nth-child(even){padding-left:0;border-left:0}}
+
+/* ROADMAP */
+.road{margin-top:80px;position:relative}
+.road .rail{position:absolute;left:0;right:0;top:9px;height:1px;background:var(--line-2)}
+.road .rail i{position:absolute;inset:0;background:linear-gradient(90deg,var(--mint),rgba(127,216,176,.2));transform-origin:left}
+.road.in .rail i{animation:railIn 2.2s var(--ease) both}
+@keyframes railIn{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.stage{min-width:0}
+.stage .dot{width:19px;height:19px;border-radius:50%;background:var(--ink);border:1px solid var(--mint);display:grid;place-items:center}
+.stage .dot::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--mint)}
+.stage.later .dot::after{background:transparent;border:1px solid var(--mint)}
+.stage .when{margin-top:28px;font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mint)}
+.stage h3{margin-top:12px;font-size:32px}
+.stage p{margin-top:14px;color:var(--muted);font-size:16px}
+.stage ul{margin:18px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.stage li{font-size:15px;padding-left:18px;position:relative}
+.stage li::before{content:"";position:absolute;left:0;top:.7em;width:8px;height:1px;background:var(--mint)}
+.vision .intro{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,96px);align-items:end}
+@media (max-width:900px){.vision .intro,.stages{grid-template-columns:1fr}.road .rail{display:none}}
+
+/* RAISE */
+.inv{background:radial-gradient(80% 60% at 85% 0%,rgba(127,216,176,.08),transparent 60%),var(--ink-2);border-block:1px solid var(--line)}
+.inv .wrap{display:grid;grid-template-columns:7fr 5fr;gap:clamp(40px,6vw,96px)}
+.inv .lede{margin-top:24px}
+.inv h4{margin:52px 0 0;font-family:var(--f-mono);font-weight:400;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.proof{margin-top:18px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line-2)}
+.proof div{padding:20px 16px 0 0;min-width:0}
+.proof div+div{padding-left:16px;border-left:1px solid var(--line)}
+.proof b{display:block;font-family:var(--f-display);font-weight:400;font-size:22px;line-height:1.2}
+.proof small{display:block;margin-top:8px;font-size:13.5px;color:var(--muted);line-height:1.5}
+.rev{margin-top:18px;display:grid;border-top:1px solid var(--line-2)}
+.rev div{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px}
+.rev span{font-family:var(--f-mono);font-size:12px;color:var(--mint);padding-top:3px}
+.rev small{display:block;color:var(--muted);font-size:14px;margin-top:2px}
+.form{align-self:start;position:sticky;top:calc(env(safe-area-inset-top,0px) + 100px);padding:34px;border-radius:26px;background:var(--panel);border:1px solid var(--line-2);box-shadow:0 40px 80px -40px rgba(0,0,0,.8);min-width:0}
+.form h3{font-size:32px}
+.form > p{margin-top:10px;color:var(--muted);font-size:15px}
+.form form{margin-top:24px;display:grid;gap:14px}
+.fld{display:grid;gap:6px}
+.fld label{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.fld input,.fld select{font:inherit;font-size:16px;color:var(--ivory);background:var(--ink);border:1px solid var(--line-2);border-radius:12px;padding:13px 14px;width:100%;transition:border-color .2s}
+.fld input:focus,.fld select:focus{outline:none;border-color:var(--mint)}
+.form .btn{justify-content:center;margin-top:6px}
+.fine{font-size:12.5px;color:var(--dim);line-height:1.5}
+.done{display:none;padding:18px;border-radius:14px;background:var(--mint-wash);border:1px solid rgba(127,216,176,.3);font-size:15px}
+.form.sent form{display:none}
+.form.sent .done{display:block}
+@media (max-width:980px){.inv .wrap{grid-template-columns:1fr}.form{position:relative;top:0}.proof{grid-template-columns:1fr 1fr}.proof div:nth-child(3){padding-left:0;border-left:0}.proof div:nth-child(n+3){margin-top:20px}}
+
+/* CTA */
+.cta{overflow:hidden}
+.cta .wrap{position:relative;z-index:2}
+.cta h2{font-size:clamp(48px,8vw,120px);font-weight:300;letter-spacing:-.035em;line-height:.96;max-width:14ch}
+.cta h2 em{color:var(--mint)}
+.wl{margin-top:48px;display:flex;gap:10px;max-width:700px;padding:6px;border-radius:999px;border:1px solid var(--line-2);background:rgba(15,27,46,.7)}
+.wl input,.wl select{min-width:0;font:inherit;font-size:16px;background:transparent;border:0;color:var(--ivory);padding:0 16px}
+.wl input{flex:1.3}
+.wl select{flex:1;border-left:1px solid var(--line-2)}
+.wl select option{background:var(--panel)}
+.wl input:focus,.wl select:focus{outline:none}
+.wl-msg{margin-top:16px;font-size:15px;color:var(--mint);min-height:1.5em}
+.cta .glow{position:absolute;right:-10%;top:-20%;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(127,216,176,.14),transparent 62%);pointer-events:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:620px){.wl{flex-direction:column;border-radius:20px}.wl input,.wl select{padding:12px 14px}.wl select{border-left:0;border-top:1px solid var(--line-2)}.wl .btn{justify-content:center}}
+
+footer{border-top:1px solid var(--line);padding-block:56px 48px}
+footer .top{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap;align-items:start}
+footer nav{display:flex;gap:28px;flex-wrap:wrap}
+footer nav a{font-size:14px;color:var(--muted);text-decoration:none}
+footer nav a:hover{color:var(--ivory)}
+footer .legal{margin-top:40px;padding-top:24px;border-top:1px solid var(--line);font-size:12.5px;line-height:1.7;color:var(--dim);display:grid;grid-template-columns:1fr auto;gap:24px}
+@media (max-width:700px){footer .legal{grid-template-columns:1fr}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Mintly home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="none" stroke="#7FD8B0" stroke-width="1"/><path d="M8.5 21V12.5c0-1.6 1.2-2.6 2.6-2.6s2.5 1 2.5 2.6V21M13.6 12.5c0-1.6 1.2-2.6 2.5-2.6s2.5 1 2.5 2.6V21M18.6 12.5c0-1.6 1.2-2.6 2.5-2.6s2.4 1 2.4 2.6V21" fill="none" stroke="#ECE6D8" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span>mintly</span>
+    </a>
+    <ul>
+      <li><a href="#assets">Assets</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#markets">Markets</a></li>
+      <li><a href="#intelligence">Intelligence</a></li>
+      <li><a href="#trust">Trust</a></li>
+      <li><a href="#issuers">Issuers</a></li>
+      <li><a href="#raise">Partner with us</a></li>
+    </ul>
+    <a class="btn btn-primary" href="#access">Request Access</a>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<section class="hero">
+  <canvas id="flow" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div>
+      <div class="eyebrow h-in" style="--d:.05s">Tokenized real-world assets</div>
+      <h1 style="margin-top:28px"><span class="ln">Private markets,</span><span class="ln">now within reach.</span></h1>
+      <p class="lede h-in">Mintly gives accredited and professional investors in the United States and the UAE access to tokenized private credit, funds, real estate and gold. Every term is explained, every holding is verifiable, and AI helps you understand exactly what you own.</p>
+      <div class="ctas h-in" style="--d:.5s">
+        <a class="btn btn-primary" href="#access">Request Early Access <span class="arr">→</span></a>
+        <a class="btn btn-ghost" href="#how">See How It Works</a>
+      </div>
+      <div class="markets-tag h-in" style="--d:.65s"><span><i></i>United States</span><span><i></i>Dubai · Abu Dhabi</span><span><i></i>Licensed partners</span></div>
+    </div>
+    <div class="hero-cards h-in" style="--d:.7s" aria-label="Product preview with sample data">
+      <div class="gcard gc1 hold">
+        <div class="k"><span>Holding</span><span>Sample</span></div>
+        <h4>Senior Private Credit Fund</h4>
+        <p class="sub">Tokenized fund units · USD</p>
+        <div class="grid3">
+          <div><small>Value</small><b>$25,400</b></div>
+          <div><small>Next payout</small><b>15 Nov</b></div>
+          <div><small>Redeem</small><b>Quarterly</b></div>
+        </div>
+        <div class="chainline">Ownership recorded onchain · verified</div>
+      </div>
+      <div class="gcard gc2">
+        <div class="k"><span>Mintly Intelligence</span></div>
+        <div class="ai-row">
+          <span class="ai-dot" aria-hidden="true"></span>
+          <div>
+            <p>You can redeem each quarter with 30 days' notice. <span>The tokens move instantly, but the fund's redemption terms still apply.</span></p>
+            <span class="src">Offering memo · §6.2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="marquee" aria-hidden="true">
+    <div class="track">
+      <span>Private credit</span><span>Treasury &amp; money market funds</span><span>Dubai real estate</span><span>Allocated gold</span><span>Reg D · Reg S</span><span>VARA · DIFC · ADGM</span>
+      <span>Private credit</span><span>Treasury &amp; money market funds</span><span>Dubai real estate</span><span>Allocated gold</span><span>Reg D · Reg S</span><span>VARA · DIFC · ADGM</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="band problem">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow rv">The problem</div>
+      <h2 class="h2 rv" style="margin-top:26px">Tokenization fixed the plumbing. <em class="m">Not the experience.</em></h2>
+    </div>
+    <div class="body">
+      <p class="rv">Private credit, real estate and institutional funds are where serious wealth compounds. Tokenization is making them cheaper to issue, faster to settle and possible to own in smaller sizes.</p>
+      <p class="rv" style="--d:.1s">But an investor today still holds cash in one app, investments across several platforms and the documents that matter in their email. Knowing what you can invest in, what is committed and when you can get your money back takes repeated manual work.</p>
+      <ul class="noise" id="noise">
+        <li><span class="tag">Access</span><s>Offerings are scattered and hard to compare.</s></li>
+        <li><span class="tag">Terms</span><s>Fees and exit rules sit in 80-page documents.</s></li>
+        <li><span class="tag">Ownership</span><s>It's unclear who holds what, and where.</s></li>
+        <li><span class="tag">Platforms</span><s>Most are built for crypto natives or back offices.</s></li>
+      </ul>
+      <p class="gap-line rv">Access has scaled. Understanding has not. <em>This is the gap Mintly is built to close.</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- ASSETS -->
+<section class="band alt assets" id="assets">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="eyebrow rv">What you can hold</div>
+        <h2 class="h2 xl rv" style="margin-top:26px">Real assets. <em class="m">Clear terms.</em></h2>
+      </div>
+      <p class="lede rv">Discover eligible offerings, compare their terms side by side and subscribe in a few steps. Each one shows its provider, your ownership rights, fees and exit terms before you commit.</p>
+    </div>
+    <div class="agrid">
+      <article class="as rv">
+        <div class="top"><div><span class="code">ASSET CLASS · 01</span><h3>Private credit</h3></div>
+          <svg class="motif" viewBox="0 0 120 70" aria-hidden="true"><g class="bars"><rect x="18" y="40" width="12" height="26"/><rect x="38" y="30" width="12" height="36"/><rect x="58" y="22" width="12" height="44"/><rect x="78" y="14" width="12" height="52"/></g></svg></div>
+        <p>Senior secured loans to established businesses, packaged as tokenized fund units with regular income distributions.</p>
+        <div class="meta"><div>Income<b>Monthly or quarterly</b></div><div>Horizon<b>3 to 5 years</b></div><div>Exit<b>Redemption windows</b></div></div>
+      </article>
+      <article class="as rv" style="--d:.1s">
+        <div class="top"><div><span class="code">ASSET CLASS · 02</span><h3>Tokenized funds</h3></div>
+          <svg class="motif" viewBox="0 0 120 70" aria-hidden="true"><g class="spin"><circle cx="60" cy="35" r="24"/><circle cx="60" cy="35" r="14"/><path d="M60 5v8M60 57v8M30 35h8M82 35h8"/></g></svg></div>
+        <p>Treasury and money market funds from established managers, for the cash you want working but close at hand.</p>
+        <div class="meta"><div>Income<b>Daily accrual</b></div><div>Horizon<b>Any</b></div><div>Exit<b>Frequent liquidity</b></div></div>
+      </article>
+      <article class="as rv">
+        <div class="top"><div><span class="code">ASSET CLASS · 03</span><h3>Real estate</h3></div>
+          <svg class="motif" viewBox="0 0 120 70" aria-hidden="true"><g class="tower"><rect x="20" y="34" width="22" height="32"/><rect x="48" y="8" width="22" height="58"/><rect x="76" y="22" width="22" height="44"/></g><path d="M10 66h100"/></svg></div>
+        <p>Fractional interests in income-producing property, starting with Dubai, one of the first cities to put title records onchain.</p>
+        <div class="meta"><div>Income<b>Rental yield</b></div><div>Horizon<b>5+ years</b></div><div>Exit<b>Annual windows</b></div></div>
+      </article>
+      <article class="as rv" style="--d:.1s">
+        <div class="top"><div><span class="code">ASSET CLASS · 04</span><h3>Allocated gold</h3></div>
+          <svg class="motif" viewBox="0 0 120 70" aria-hidden="true"><path class="ingot" d="M30 50l10-20h40l10 20z"/><path d="M14 64h92"/><path d="M48 30l-4 20M72 30l4 20" opacity=".5"/></svg></div>
+        <p>Vaulted, audited physical gold, held in your name and represented by tokens you can hold, transfer or redeem.</p>
+        <div class="meta"><div>Income<b>None</b></div><div>Horizon<b>Any</b></div><div>Exit<b>Sell or redeem</b></div></div>
+      </article>
+    </div>
+    <p class="note-row rv">Availability depends on investor eligibility and jurisdiction. Terms shown are typical examples.</p>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="band how" id="how">
+  <div class="wrap">
+    <div class="eyebrow rv">The investor journey</div>
+    <h2 class="h2 rv" style="margin-top:26px">From question to <em class="m">ownership.</em></h2>
+    <div class="grid">
+      <ol class="steps" id="steps">
+        <li class="step on" data-s="0" tabindex="0"><span class="n">01</span><div><h3>Verify</h3><p>Confirm your identity and eligibility once: accredited investor in the US, or professional investor in the UAE.</p></div></li>
+        <li class="step" data-s="1" tabindex="0"><span class="n">02</span><div><h3>Discover</h3><p>See every offering you're eligible for, with fees, risks and withdrawal terms side by side.</p></div></li>
+        <li class="step" data-s="2" tabindex="0"><span class="n">03</span><div><h3>Ask</h3><p>Ask "I may need this money in six months. What can I access?" Mintly answers from the offering documents and shows its sources.</p></div></li>
+        <li class="step" data-s="3" tabindex="0"><span class="n">04</span><div><h3>Subscribe</h3><p>Mintly prepares the subscription for your approval. A licensed partner executes it and records your ownership.</p></div></li>
+        <li class="step" data-s="4" tabindex="0"><span class="n">05</span><div><h3>Hold &amp; track</h3><p>Cash and investments sit side by side, kept separate. Track distributions, maturities and redemption windows in one place.</p></div></li>
+      </ol>
+      <div class="device-col">
+        <div class="device" aria-label="Mintly app preview with sample data">
+          <div class="screen-wrap">
+            <div class="notch"></div>
+            <div class="sbar"><span>9:41</span><span>mintly</span></div>
+            <div class="scr on" data-s="0">
+              <span class="k">Eligibility</span>
+              <h5>How are you investing?</h5>
+              <div class="opt">US accredited investor<small>Reg D 506(c)</small></div>
+              <div class="opt sel">UAE professional investor<small>Dubai · DIFC · ADGM</small></div>
+              <div>
+                <div class="chk">Identity verified<b>Done</b></div>
+                <div class="chk">Source of funds<b>Done</b></div>
+                <div class="chk">Professional investor check<b class="p">In review</b></div>
+              </div>
+              <div class="mbtn">Continue</div>
+            </div>
+            <div class="scr" data-s="1">
+              <span class="k">Eligible for you · 4</span>
+              <h5>Offerings</h5>
+              <div class="mrow"><div>Treasury Money Fund<small>USD · daily liquidity</small></div><span class="tg">Low risk</span></div>
+              <div class="mrow"><div>Senior Private Credit<small>USD · quarterly exit</small></div><span class="tg">Income</span></div>
+              <div class="mrow"><div>Dubai Residential Income<small>AED · annual window</small></div></div>
+              <div class="mrow"><div>Allocated Gold<small>Vaulted in Dubai</small></div></div>
+              <div class="calm-note">Compare fees, risks and exit terms before you open a single document.</div>
+            </div>
+            <div class="scr" data-s="2">
+              <span class="k">Mintly Intelligence</span>
+              <div class="bub q">I may need this money in six months. What can I access?</div>
+              <div class="bub a">The Treasury Money Fund lets you withdraw any business day. Senior Private Credit only redeems quarterly with 30 days' notice, so plan around the 1 Jan window.<br><span class="src">Offering memo · §6.2</span></div>
+            </div>
+            <div class="scr" data-s="3">
+              <span class="k">Subscribe</span>
+              <div class="amt">$25,000</div>
+              <div>
+                <div class="kv">Offering<b>Senior Private Credit</b></div>
+                <div class="kv">Executed by<b>Licensed partner</b></div>
+                <div class="kv">Settlement<b>Wire or USDC</b></div>
+                <div class="kv">Management fee<b>1.25% a year</b></div>
+                <div class="kv">Exit<b>Quarterly, 30 days' notice</b></div>
+              </div>
+              <div class="mbtn">Approve subscription</div>
+            </div>
+            <div class="scr" data-s="4">
+              <span class="k">Your money</span>
+              <h5>$68,400</h5>
+              <div class="split"><div><small>Cash</small><b>$12,000</b></div><div><small>Investments</small><b>$56,400</b></div></div>
+              <div class="mrow"><div>Senior Private Credit<small>Next payout 15 Nov</small></div><b style="font-weight:500">$25,400</b></div>
+              <div class="mrow"><div>Treasury Money Fund<small>Accruing daily</small></div><b style="font-weight:500">$21,000</b></div>
+              <div class="mrow"><div>Allocated Gold<small>Vault verified</small></div><b style="font-weight:500">$10,000</b></div>
+              <div class="calm-note">Redemption window for Senior Private Credit opens 1 Jan.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETS -->
+<section class="band alt mkt" id="markets">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="eyebrow rv">Two markets</div>
+        <h2 class="h2 xl rv" style="margin-top:26px">New York to <em class="m">Dubai.</em></h2>
+      </div>
+      <p class="lede rv" style="max-width:46ch">Built for the regulatory frameworks of the world's deepest capital market and its fastest-moving digital-asset hub.</p>
+    </div>
+    <div class="bridge rv">
+      <div class="bridge-vis">
+        <svg viewBox="0 0 1000 220" aria-hidden="true">
+          <g class="grid"><line x1="0" y1="190" x2="1000" y2="190"/><line x1="0" y1="140" x2="1000" y2="140" stroke-dasharray="2 8"/><line x1="0" y1="90" x2="1000" y2="90" stroke-dasharray="2 8"/></g>
+          <path id="arcPath" class="arc" d="M170 170 Q500 -40 830 170"/>
+          <circle class="pkt" r="5"><animateMotion dur="4s" repeatCount="indefinite"><mpath href="#arcPath"/></animateMotion></circle>
+          <circle class="pkt" r="3.5" opacity=".6"><animateMotion dur="4s" begin="2s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#arcPath"/></animateMotion></circle>
+          <g class="city"><circle class="h" cx="170" cy="170" r="22"/><circle class="c" cx="170" cy="170" r="7"/><text x="170" y="130" text-anchor="middle">New York</text><text class="t" x="170" y="214" text-anchor="middle" id="tNY">--:--</text></g>
+          <g class="city"><circle class="h" cx="830" cy="170" r="22"/><circle class="c" cx="830" cy="170" r="7"/><text x="830" y="130" text-anchor="middle">Dubai</text><text class="t" x="830" y="214" text-anchor="middle" id="tDXB">--:--</text></g>
+        </svg>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Markets">
+        <button role="tab" id="tab-us" aria-controls="p-us" aria-selected="true">United States</button>
+        <button role="tab" id="tab-uae" aria-controls="p-uae" aria-selected="false">United Arab Emirates</button>
+      </div>
+      <div class="mpanel" id="p-us" role="tabpanel" aria-labelledby="tab-us">
+        <div><small>Who can invest</small><ul><li>Accredited investors<span>Offerings under Reg D 506(c)</span></li><li>Non-US investors<span>Offerings under Reg S</span></li></ul></div>
+        <div><small>Regulated roles</small><ul><li>FINRA broker-dealer</li><li>SEC-registered transfer agent</li><li>Qualified custodian</li></ul></div>
+        <div><small>Lead assets</small><ul><li>Treasury &amp; money market funds</li><li>Private credit</li></ul></div>
+        <div><small>Settlement</small><ul><li>USD wire</li><li>USDC stablecoin</li></ul></div>
+      </div>
+      <div class="mpanel" id="p-uae" role="tabpanel" aria-labelledby="tab-uae" hidden>
+        <div><small>Who can invest</small><ul><li>Professional investors<span>As defined by each UAE regulator</span></li></ul></div>
+        <div><small>Frameworks</small><ul><li>VARA<span>Dubai</span></li><li>DFSA<span>Dubai International Financial Centre</span></li><li>FSRA<span>Abu Dhabi Global Market</span></li></ul></div>
+        <div><small>Lead assets</small><ul><li>Dubai real estate</li><li>Allocated gold</li><li>Private credit</li></ul></div>
+        <div><small>Settlement</small><ul><li>AED and USD</li><li>Regulated stablecoins</li></ul></div>
+      </div>
+    </div>
+    <p class="note-row rv">Regulated activity in each market is carried out by licensed partners. Mintly is pursuing its own licensing in each jurisdiction.</p>
+  </div>
+</section>
+
+<!-- INTELLIGENCE -->
+<section class="band intel" id="intelligence">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow rv">Mintly Intelligence</div>
+      <h2 class="h2 rv" style="margin-top:26px">An 80-page memo, <em class="m">explained in a minute.</em></h2>
+      <p class="lede rv">Mintly's AI reads the approved offering documents and answers in plain language, with a source reference for every term. It explains; it doesn't recommend. Verified records, eligibility rules and your approval govern every transaction, and questions that need specialist judgment go to a person.</p>
+      <p class="quote rv">Think of it as a calm, informed guide, not a salesperson.</p>
+      <ul class="feats">
+        <li class="rv"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/></svg>Extracts terms from offering documents, with sources</li>
+        <li class="rv" style="--d:.05s"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>Guides onboarding and eligibility checks</li>
+        <li class="rv" style="--d:.1s"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>Explains portfolio changes and upcoming maturities</li>
+        <li class="rv" style="--d:.15s"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Flags what needs your attention, before it's due</li>
+      </ul>
+    </div>
+    <div class="chat rv" style="--d:.15s">
+      <div class="chat-h">
+        <div class="t"><span class="ai-dot" aria-hidden="true"></span>Mintly Intelligence</div>
+        <small>Sample conversation</small>
+      </div>
+      <div class="doc"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/></svg><span>Reading <b>Senior Private Credit Fund</b> · offering memorandum (example)</span></div>
+      <div class="chat-b" aria-live="polite">
+        <div class="bub q" id="chatQ">When can I get my money out?</div>
+        <div class="bub a" id="chatA">Redemptions open once a quarter and need 30 days' written notice. If requests in a quarter exceed 5% of the fund, payouts may be spread over more than one window. Tokenization doesn't change this: your tokens can move instantly, but the fund's redemption terms still apply.</div>
+        <div class="terms" id="terms">
+          <span class="cap">Key terms extracted</span>
+          <div class="row"><span>Redemption window</span><span>Quarterly</span><span class="s">§6.2</span></div>
+          <div class="row"><span>Notice period</span><span>30 days</span><span class="s">§6.3</span></div>
+          <div class="row"><span>Gate</span><span>5% of fund per quarter</span><span class="s">§6.5</span></div>
+        </div>
+      </div>
+      <div class="chat-q" role="group" aria-label="Try a question">
+        <button type="button" data-q="0" aria-pressed="false">What do I actually own?</button>
+        <button type="button" data-q="1" aria-pressed="true">When can I get my money out?</button>
+        <button type="button" data-q="2" aria-pressed="false">What will I pay in fees?</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST / MODEL -->
+<section class="band alt model" id="trust">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="eyebrow rv">How Mintly operates</div>
+        <h2 class="h2 rv" style="margin-top:26px">Licensed partners hold the assets. <em class="m">Mintly holds the experience.</em></h2>
+      </div>
+      <p class="lede rv">Established providers handle regulated activity, custody and asset servicing. Mintly owns the customer experience and the integrations that connect them.</p>
+    </div>
+    <div class="flow4">
+      <div class="node4 rv"><small>You</small><h3>Investors</h3><ul><li>Accredited (US)</li><li>Professional (UAE)</li></ul></div>
+      <div class="node4 core rv" style="--d:.1s"><small>Mintly</small><h3>Experience &amp; AI</h3><ul><li>Onboarding</li><li>Discovery &amp; explanations</li><li>One view of your money</li></ul></div>
+      <div class="node4 rv" style="--d:.2s"><small>Licensed partners</small><h3>Regulated activity</h3><ul><li>Broker-dealer · VASP</li><li>Transfer agent</li><li>Custodian</li></ul></div>
+      <div class="node4 rv" style="--d:.3s"><small>Issuers</small><h3>Asset managers</h3><ul><li>Funds &amp; private credit</li><li>Real estate &amp; gold</li></ul></div>
+    </div>
+
+    <div class="principles">
+      <div class="pr rv"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></span><h4>Compliance-first</h4><p>Eligibility rules and verified records govern every transaction.</p></div>
+      <div class="pr rv" style="--d:.08s"><span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 4v16"/></svg></span><h4>Verifiable ownership</h4><p>Your holdings are recorded onchain and on the transfer agent's register.</p></div>
+      <div class="pr rv" style="--d:.16s"><span class="ic"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><h4>Explainable AI</h4><p>Every answer links to the document it came from.</p></div>
+      <div class="pr rv" style="--d:.24s"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></span><h4>No liquidity promises</h4><p>Tokenization is never presented as instant liquidity. Exit terms are always shown.</p></div>
+    </div>
+
+    <div class="ledger rv">
+      <div>
+        <span class="k">Your cash</span>
+        <h4>Kept separate, always visible</h4>
+        <div class="kv">Held with<b>Regulated partner</b></div>
+        <div class="kv">Shown as<b>Available cash</b></div>
+        <div class="kv">Access<b>Per account terms</b></div>
+      </div>
+      <div>
+        <span class="k">Your investments</span>
+        <h4>Ownership spelled out</h4>
+        <div class="kv">Provider<b>Named on every holding</b></div>
+        <div class="kv">Ownership rights<b>Stated upfront</b></div>
+        <div class="kv">Fees &amp; exit terms<b>Before you subscribe</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ISSUERS -->
+<section class="band iss" id="issuers">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow rv">For issuers</div>
+      <h2 class="h2 rv" style="margin-top:26px">Bring your fund to <em class="m">a new investor base.</em></h2>
+      <p class="lede rv">Asset managers reach verified investors in the US and UAE through one platform, with Mintly handling discovery, explanations and investor servicing.</p>
+      <a class="btn btn-ghost rv" href="#access">Talk to our team <span class="arr">→</span></a>
+    </div>
+    <div class="iss-list">
+      <div class="rv"><b>Verified demand</b><p>Investors arrive already checked for eligibility in their jurisdiction.</p></div>
+      <div class="rv" style="--d:.08s"><b>Documents that explain themselves</b><p>Your approved materials power accurate, sourced answers.</p></div>
+      <div class="rv"><b>Servicing built in</b><p>Distributions, maturities and redemption windows communicated clearly.</p></div>
+      <div class="rv" style="--d:.08s"><b>Issuer tools</b><p>Software for investor reporting and cap-table visibility, on the roadmap.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION -->
+<section class="band alt vision" id="vision">
+  <div class="wrap">
+    <div class="intro">
+      <div>
+        <div class="eyebrow rv">The road ahead</div>
+        <h2 class="h2 xl rv" style="margin-top:26px">The future <em class="m">we're building.</em></h2>
+      </div>
+      <p class="lede rv">One place where everyday money management meets institutional-grade assets, with AI keeping investors informed at every step.</p>
+    </div>
+    <div class="road rv" id="road">
+      <div class="rail"><i></i></div>
+      <div class="stages">
+        <div class="stage">
+          <span class="dot"></span>
+          <div class="when">Pilot</div>
+          <h3>Focused launch</h3>
+          <p>One investor segment, one jurisdiction, one asset category, delivered with established providers.</p>
+          <ul><li>Onboarding and eligibility</li><li>Consolidated money view</li><li>Discovery and subscription tracking</li><li>AI grounded in provider documents</li></ul>
+        </div>
+        <div class="stage">
+          <span class="dot"></span>
+          <div class="when">Expansion</div>
+          <h3>Both markets live</h3>
+          <p>US and UAE investors on one platform, with more asset classes as partner capabilities allow.</p>
+          <ul><li>Private credit, funds, real estate, gold</li><li>Distributions and redemptions in-app</li></ul>
+        </div>
+        <div class="stage later">
+          <span class="dot"></span>
+          <div class="when">Platform</div>
+          <h3>Full money layer</h3>
+          <p>Payment accounts, cards and transfers alongside investments, plus software for issuers.</p>
+          <ul><li>Partner-held balances and payments</li><li>Issuer reporting tools</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RAISE -->
+<section class="band inv" id="raise">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow rv">For venture partners</div>
+      <h2 class="h2 rv" style="margin-top:26px;font-weight:300">Building with <em class="m">long-term capital.</em></h2>
+      <p class="lede rv">Mintly is raising its first institutional round to launch the pilot. Our advantage is the connection between daily money visibility, access to real-world assets and ongoing AI support.</p>
+      <h4 class="rv">What the pilot must prove</h4>
+      <div class="proof rv">
+        <div><b>Completed onboarding</b><small>Eligible investors finish verification.</small></div>
+        <div><b>Funded accounts</b><small>Interest turns into a first subscription.</small></div>
+        <div><b>Repeat investment</b><small>Investors come back for the next offering.</small></div>
+        <div><b>Earned trust</b><small>Reliable execution and service investors rely on.</small></div>
+      </div>
+      <h4 class="rv">How Mintly earns</h4>
+      <div class="rev rv">
+        <div><span>A</span><p>Premium memberships<small>Deeper tools and guidance for active investors.</small></p></div>
+        <div><span>B</span><p>Disclosed distribution and servicing fees<small>Permitted, transparent and shown to the investor.</small></p></div>
+        <div><span>C</span><p>Software for issuers<small>Recurring revenue as the asset layer grows.</small></p></div>
+      </div>
+    </div>
+    <div class="form rv" id="invForm" style="--d:.15s">
+      <h3>Request the investor deck</h3>
+      <p>Share a few details and our founding team will send the deck and data room access.</p>
+      <form id="deckForm" novalidate>
+        <div class="fld"><label for="inv-name">Full name</label><input id="inv-name" autocomplete="name" placeholder="Your name"></div>
+        <div class="fld"><label for="inv-firm">Firm or fund</label><input id="inv-firm" autocomplete="organization" placeholder="Fund name"></div>
+        <div class="fld"><label for="inv-email">Work email</label><input id="inv-email" type="email" autocomplete="email" placeholder="you@fund.com"></div>
+        <div class="fld"><label for="inv-type">Investor type</label>
+          <select id="inv-type"><option>Venture capital</option><option>Family office</option><option>Angel investor</option><option>Strategic / corporate</option></select>
+        </div>
+        <button class="btn btn-primary" type="submit">Request the deck <span class="arr">→</span></button>
+        <p class="fine" id="formErr" aria-live="polite">We share materials with verified investors only.</p>
+      </form>
+      <div class="done" id="done"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="band cta" id="access">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="eyebrow rv">Early access</div>
+    <h2 class="rv" style="margin-top:26px">Own what moves markets. <em>With clarity.</em></h2>
+    <form class="wl rv" id="wlForm" novalidate>
+      <label for="wl-email" class="sr">Email address</label>
+      <input id="wl-email" type="email" autocomplete="email" placeholder="Your email address">
+      <label for="wl-type" class="sr">I am</label>
+      <select id="wl-type"><option>US accredited investor</option><option>UAE professional investor</option><option>Issuer / asset manager</option><option>Other</option></select>
+      <button class="btn btn-primary" type="submit">Request Access <span class="arr">→</span></button>
+    </form>
+    <p class="wl-msg" id="wlMsg" aria-live="polite"></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <a class="brand" href="#top" aria-label="Mintly home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="none" stroke="#7FD8B0" stroke-width="1"/><path d="M8.5 21V12.5c0-1.6 1.2-2.6 2.6-2.6s2.5 1 2.5 2.6V21M13.6 12.5c0-1.6 1.2-2.6 2.5-2.6s2.5 1 2.5 2.6V21M18.6 12.5c0-1.6 1.2-2.6 2.5-2.6s2.4 1 2.4 2.6V21" fill="none" stroke="#ECE6D8" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <span>mintly</span>
+      </a>
+      <nav aria-label="Footer"><a href="#assets">Assets</a><a href="#how">How It Works</a><a href="#markets">Markets</a><a href="#intelligence">Intelligence</a><a href="#trust">Trust</a><a href="#issuers">Issuers</a><a href="#raise">Partner with us</a></nav>
+    </div>
+    <div class="legal">
+      <p>Mintly is in development and not yet available. Nothing on this website is an offer to sell, or a solicitation of an offer to buy, any security or digital asset. Offerings will be made only to eligible investors, in permitted jurisdictions, through licensed partners. Mintly does not currently hold a broker-dealer, transfer agent, investment adviser or virtual asset service provider licence. Product screens, offerings, figures and terms shown are illustrative examples. Investing in private markets involves risk, including loss of capital and limited liquidity.</p>
+      <p>© 2026 Mintly</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var prog = document.getElementById('progress');
+  function onScroll(){ var h = document.documentElement.scrollHeight - innerHeight; prog.style.transform = 'scaleX(' + (h > 0 ? scrollY / h : 0) + ')'; }
+  addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  if ('IntersectionObserver' in window && !reduce){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12, rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.rv, #noise, #road').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('#noise, #road').forEach(function(el){ el.classList.add('in'); });
+  }
+
+  /* hero: ledger flow field with travelling blocks */
+  var cv = document.getElementById('flow'), ctx = cv.getContext('2d');
+  var W, H, mx = .7, my = .5, tmx = .7, tmy = .5, t0 = performance.now();
+  function size(){ var d = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d,0,0,d,0,0); }
+  size(); addEventListener('resize', size);
+  cv.parentElement.addEventListener('pointermove', function(e){ var r = cv.getBoundingClientRect(); tmx = (e.clientX - r.left) / r.width; tmy = (e.clientY - r.top) / r.height; });
+  var N = 30;
+  function yAt(p, u, t){
+    var base = H * (.35 + p * .5), amp = 30 + 60 * Math.sin(p * Math.PI) * (.6 + my * .6);
+    return base - u * u * H * .32 + Math.sin(u * 3.2 + t * .25 + p * 2.4) * amp * (.4 + u) + Math.sin(u * 7 - t * .4 + p * 5) * 8 * (1 + mx);
+  }
+  function draw(now){
+    var t = (now - t0) / 1000;
+    mx += (tmx - mx) * .04; my += (tmy - my) * .04;
+    ctx.clearRect(0,0,W,H);
+    for (var i = 0; i < N; i++){
+      var p = i / (N - 1), hi = i % 6 === 3;
+      ctx.beginPath();
+      for (var x = 0; x <= W; x += 8){ var y = yAt(p, x / W, t); x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+      var a = .05 + .22 * Math.pow(Math.sin(p * Math.PI), 2);
+      ctx.strokeStyle = hi ? 'rgba(127,216,176,' + (a + .18) + ')' : 'rgba(170,200,230,' + a * .7 + ')';
+      ctx.lineWidth = hi ? 1.2 : .7; ctx.stroke();
+      if (hi){
+        for (var k = 0; k < 3; k++){
+          var u = ((t * .045 + k / 3 + p) % 1), bx = u * W, by = yAt(p, u, t);
+          ctx.fillStyle = 'rgba(127,216,176,' + (.35 + .5 * Math.sin(u * Math.PI)) + ')';
+          ctx.fillRect(bx - 3, by - 3, 6, 6);
+        }
+      }
+    }
+    if (!reduce) requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+  /* steps <-> device */
+  var steps = document.querySelectorAll('.step'), scrs = document.querySelectorAll('.scr');
+  function setStep(s){ steps.forEach(function(el){ el.classList.toggle('on', +el.dataset.s === s); }); scrs.forEach(function(el){ el.classList.toggle('on', +el.dataset.s === s); }); }
+  steps.forEach(function(el){
+    el.addEventListener('click', function(){ setStep(+el.dataset.s); });
+    el.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); setStep(+el.dataset.s); } });
+  });
+  if ('IntersectionObserver' in window && matchMedia('(min-width: 901px)').matches){
+    var so = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting) setStep(+e.target.dataset.s); }); }, {rootMargin:'-45% 0px -45% 0px'});
+    steps.forEach(function(el){ so.observe(el); });
+  }
+
+  /* markets: tabs + live clocks */
+  var tabs = document.querySelectorAll('.tabs button');
+  tabs.forEach(function(b){
+    b.addEventListener('click', function(){
+      tabs.forEach(function(x){
+        var on = x === b; x.setAttribute('aria-selected', on ? 'true' : 'false');
+        var p = document.getElementById(x.getAttribute('aria-controls')); p.hidden = !on;
+        if (on && !reduce){ p.classList.remove('anim'); void p.offsetWidth; p.classList.add('anim'); }
+      });
+    });
+  });
+  function clock(){
+    try{
+      var f = function(tz){ return new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:tz}).format(new Date()); };
+      document.getElementById('tNY').textContent = f('America/New_York') + '  ET';
+      document.getElementById('tDXB').textContent = f('Asia/Dubai') + '  GST';
+    }catch(e){}
+  }
+  clock(); setInterval(clock, 20000);
+
+  /* intelligence chat */
+  var QA = [
+    {q:'What do I actually own?',
+     a:'You hold units in the Senior Private Credit Fund. Each unit is represented by a token in your wallet and recorded on the transfer agent’s register, so there are two matching records of your ownership. The units give you a pro-rata share of the fund’s income and capital. They don’t give you a direct claim on any individual loan.',
+     cap:'Ownership', rows:[['Instrument','Fund units, tokenized','§2.1'],['Register','Transfer agent + onchain','§2.4'],['Your rights','Pro-rata income and capital','§3.1']]},
+    {q:'When can I get my money out?',
+     a:'Redemptions open once a quarter and need 30 days’ written notice. If requests in a quarter exceed 5% of the fund, payouts may be spread over more than one window. Tokenization doesn’t change this: your tokens can move instantly, but the fund’s redemption terms still apply.',
+     cap:'Key terms extracted', rows:[['Redemption window','Quarterly','§6.2'],['Notice period','30 days','§6.3'],['Gate','5% of fund per quarter','§6.5']]},
+    {q:'What will I pay in fees?',
+     a:'Two fund fees apply. A management fee of 1.25% a year is charged on the value of your units, and a performance fee of 10% applies only to returns above an 8% annual hurdle. On a $25,000 holding, the management fee comes to about $312 a year. Any Mintly membership fee is separate and shown before you subscribe.',
+     cap:'Fees extracted', rows:[['Management fee','1.25% a year','§8.1'],['Performance fee','10% above 8% hurdle','§8.2'],['Subscription fee','None','§8.4']]}
+  ];
+  var qEl = document.getElementById('chatQ'), aEl = document.getElementById('chatA'), terms = document.getElementById('terms');
+  var btns = document.querySelectorAll('.chat-q button'), typer = null, pending = null;
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function renderTerms(d){
+    var h = '<span class="cap">' + esc(d.cap) + '</span>';
+    d.rows.forEach(function(r){ h += '<div class="row"><span>' + esc(r[0]) + '</span><span>' + esc(r[1]) + '</span><span class="s">' + esc(r[2]) + '</span></div>'; });
+    terms.innerHTML = h;
+  }
+  function ask(n){
+    var d = QA[n];
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', +b.dataset.q === n ? 'true' : 'false'); });
+    clearInterval(typer); clearTimeout(pending);
+    qEl.textContent = d.q;
+    if (reduce){ aEl.textContent = d.a; renderTerms(d); return; }
+    terms.classList.add('hide'); terms.classList.remove('show');
+    aEl.innerHTML = '<span class="caret"></span>';
+    var words = d.a.split(' '), k = 0;
+    pending = setTimeout(function(){
+      typer = setInterval(function(){
+        k++;
+        aEl.innerHTML = esc(words.slice(0,k).join(' ')) + '<span class="caret"></span>';
+        if (k >= words.length){ clearInterval(typer); aEl.textContent = d.a; renderTerms(d); terms.classList.remove('hide'); terms.classList.add('show'); }
+      }, 36);
+    }, 450);
+  }
+  btns.forEach(function(b){ b.addEventListener('click', function(){ ask(+b.dataset.q); }); });
+
+  /* forms (front-end only) */
+  var ok = function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); };
+  document.getElementById('deckForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var n = document.getElementById('inv-name').value.trim(), f = document.getElementById('inv-firm').value.trim(), m = document.getElementById('inv-email').value.trim(), err = document.getElementById('formErr');
+    if (!n || !f){ err.textContent = 'Add your name and firm so we know who to send the deck to.'; return; }
+    if (!ok(m)){ err.textContent = 'Enter a valid work email, like you@fund.com.'; return; }
+    document.getElementById('done').textContent = 'Thank you, ' + n.split(' ')[0] + '. Your request for ' + f + ' is in. The founding team will be in touch at ' + m + '.';
+    document.getElementById('invForm').classList.add('sent');
+  });
+  document.getElementById('wlForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var v = document.getElementById('wl-email').value.trim(), msg = document.getElementById('wlMsg');
+    if (!ok(v)){ msg.style.color = 'var(--amber)'; msg.textContent = 'Enter a valid email address, like name@example.com.'; return; }
+    msg.style.color = ''; msg.textContent = 'You’re on the list as a ' + document.getElementById('wl-type').value + '. We’ll write to ' + v + ' when access opens.';
+    document.getElementById('wl-email').value = '';
+  });
+})();
+</script>
+
+</body></html>
